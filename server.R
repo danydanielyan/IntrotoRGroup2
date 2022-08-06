@@ -71,15 +71,15 @@ server <- function(input, output) {
     vec = c()
     col = colnames(data)
     if(input$number == 1) {
-      for(i in 1:length(colnames(data))) {
+      for(i in 1:length(col)) {
         if(!is.Date(data[,i])) {
           vec = c(vec, col[i])
         }
       }
       return(selectInput("first", "Variable 1",
                          choices = vec))
-    }else (input$number == 2) {
-      for(i in 1:length(colnames(data))) {
+    }else{
+      for(i in 1:length(col)) {
         if(!is.character(data[,i])) {
           vec = c(vec, col[i])
         }
@@ -97,9 +97,18 @@ server <- function(input, output) {
       return(NULL)
     vec = c()
     col = colnames(data)
-    if(input$number >= 2){
-      for(i in 1:length(colnames(data))) {
+    if(input$number == 2){
+      for(i in 1:length(col)) {
         if(!is.character(data[,i])) {
+          vec = c(vec, col[i])
+        }
+      }
+      return(selectInput("second", "Variable 2",
+                         choices = vec))
+    }
+    else{
+      for(i in 1:length(col)) {
+        if(!is.character(data[,i]) & !is.Date(data[,i])) {
           vec = c(vec, col[i])
         }
       }
@@ -117,7 +126,7 @@ server <- function(input, output) {
     vec = c()
     col = colnames(data)
     for(i in 1:length(colnames(data))) {
-      if(!is.character(data[,i])) {
+      if(!is.character(data[,i]) & !is.Date(data[,i])) {
         vec = c(vec, col[i])
       }}
     selectInput("third", "Variable 3",
