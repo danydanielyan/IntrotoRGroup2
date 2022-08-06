@@ -1,6 +1,6 @@
 options(shiny.maxRequestSize = 40*1024^2)
 server <- function(input, output) {
-  
+ 
   dataframe <- reactive({
     inFile <- input$file
     if (is.null(inFile))
@@ -43,11 +43,6 @@ server <- function(input, output) {
       else if(is.factor(data[,input$first]) & is.factor(data[,input$second])) {
         return(selectInput("choosePlot", "Choose a Plot",
                            choices = c("Bar Plot","Mosaic Plot")))
-      }
-      else if((is.Date(data[,input$first]) & is.numeric(data[,input$second])) | 
-              (is.numeric(data[,input$first]) & is.Date(data[,input$second]))) {
-        return(selectInput("choosePlot", "Choose a Plot",
-                           choices = c("Scatter Plot","Line Plot")))
       }
     }
     else if(input$number == 3) {

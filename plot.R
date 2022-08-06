@@ -26,27 +26,7 @@ plot_one_dimensional = function(data, first, plot)
 
 plot_two_dimensional = function(data, first, second, plot) 
 {
-  # if(is.numeric(data[,first]) & is.Date(data[,second])) {
-  #   if(plot == "Scatter Plot") {
-  #     print("We are here")
-  #     return(ggplot(data, aes_string(x = second, y = first)) +
-  #              geom_point(position = "jitter",width = .2,color = "#FDB462"))
-  #   }
-  #   else if(plot = "Line Plot") {
-  #     return(ggplot(data, aes_string(x = second, y = first)) +
-  #              geom_line(color = "#FDB462"))
-  #   }
-  # }
-  # else if(is.Date(data[,first]) & is.numeric(data[,second])) {
-  #   if(plot == "Scatter Plot") {
-  #     return(ggplot(data, aes_string(x = first, y = second)) +
-  #              geom_point(position = "jitter",width = .2,color = "#FDB462"))
-  #   }
-  #   else if(plot = "Line Plot") {
-  #     return(ggplot(data, aes_string(x = first, y = second)) +
-  #              geom_line(color = "#FDB462"))
-  #   }
-  # }
+  
   if(is.numeric(data[,first]) & is.numeric(data[,second])) {
     if(plot == "Simple Scatter Plot") {
       return(ggplot(data, aes_string(x=first, y=second)) +
@@ -103,7 +83,16 @@ plot_two_dimensional = function(data, first, second, plot)
       counts = table(data[,first],data[,second])
       return(mosaicplot(counts, col="#FDB462"))
     }
-  }else { NULL }
+  }
+  else if(is.numeric(data[,first]) & is.Date(data[,second])) {
+       
+       return(ggplot(data, aes_string(x = second, y = first)) +
+                 geom_point(position = "jitter",width = .2,color = "#FDB462"))
+  }
+  else if(is.Date(data[,first]) & is.numeric(data[,second])) {
+    return(ggplot(data, aes_string(x = first, y = second)) +
+                  geom_line(color = "#FDB462"))
+  }else{NULL}
 }
 
 plot_three_dimensional = function(data, first, second, third,plot)
