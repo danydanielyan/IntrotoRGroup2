@@ -135,6 +135,23 @@ server <- function(input, output) {
     selectInput("third", "Variable 3",
                 choices = vec) 
   }) 
+
+  output$SelectCategorical = renderUI({
+    data = dataframe()
+    if(is.null(data))
+      return(NULL)
+    if(input$number == 0)
+      return(NULL)
+    
+    vec = c()
+    col = colnames(data)
+    for(i in 1:length(colnames(data))) {
+      if(is.factor(data[,i])) {
+        vec = c(vec, col[i])
+      }}
+    selectInput("categorical", "Categorical Variable",
+                choices = vec) 
+  }) 
   
   output$plot = renderPlot({
     

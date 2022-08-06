@@ -44,7 +44,8 @@ if (interactive()) {
     ),
     
     fluidRow(
-      column(4)
+      column(4,withSpinner(uiOutput('SelectCategorical'))),
+      #column(4)
     ))
 
   sideBar = dashboardSidebar(
