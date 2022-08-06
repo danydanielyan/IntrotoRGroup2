@@ -8,6 +8,12 @@ server <- function(input, output) {
     
     data = read.csv(file= inFile$datapath, sep=input$sep)
     dataNotCleared = data
+
+    show_modal_spinner(
+      spin = "cube-grid",
+      color = "firebrick",
+      text = "Cleaning up Data, Please wait..."
+    )
     
     data = fill_missing_values(dataNotCleared,input$clean, input$outlier)
     dataNotDate = data
@@ -15,6 +21,8 @@ server <- function(input, output) {
       data = formate_date(isolate(input$date),dataNotDate)
     print(head(data,n =20))
     print(str(data))
+
+    remove_modal_spinner()
     return(data)
   })
   

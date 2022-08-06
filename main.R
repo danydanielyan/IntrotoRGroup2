@@ -13,6 +13,8 @@ library(wordcloud)
 library(tm)
 library(rainbow)
 library(ggmosaic)
+library(shinycssloaders)
+library(shinybusy)
 
 source("clean.R")
 source("plot.R")
@@ -22,32 +24,29 @@ thematic::thematic_shiny(font = "auto")
 
 if (interactive()) {
   
-  
   header = dashboardHeader(
     title = "DATA EXPLORER"
   )
-  
   
   body = dashboardBody( 
     shinyDashboardThemes(theme = "grey_dark"),
     fluidRow(plotOutput("plot")),
     
     fluidRow(
-      column(4,uiOutput('SelectCategory1')),
-      column(4,uiOutput('SelectPlotType'))
+      column(4,withSpinner(uiOutput('SelectCategory1'))),
+      column(4,withSpinner(uiOutput('SelectPlotType')))
     ),
     fluidRow(
-      column(4,uiOutput('SelectCategory2'))
+      column(4,withSpinner(uiOutput('SelectCategory2')))
     ),
     fluidRow(
-      column(4,uiOutput('SelectCategory3'))
+      column(4,withSpinner(uiOutput('SelectCategory3')))
     ),
     
     fluidRow(
       column(4)
     ))
-  
-  
+
   sideBar = dashboardSidebar(
     fileInput("file", "Choose a File"),
     
@@ -63,8 +62,6 @@ if (interactive()) {
     sideBar,
     body
   )
-  
-  
+
   shinyApp(ui, server)
-  
 }
