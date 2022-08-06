@@ -1,7 +1,7 @@
-server = function(input, output) 
-{   
-    dataframe = reactive({
-      inFile = input$file
+server <- function(input, output) {
+    
+    dataframe <- reactive({
+      inFile <- input$file
       if (is.null(inFile))
         return(NULL)
       
@@ -11,7 +11,9 @@ server = function(input, output)
       data = fill_missing_values(dataNotCleared,input$clean, input$outlier)
       dataNotDate = data
       if(input$submit > 0)
-        data = formate_data(isolate(input$date),dataNotDate)
+        data = formate_date(isolate(input$date),dataNotDate)
+      print(head(data,n =20))
+      print(str(data))
       return(data)
     })
     
@@ -22,34 +24,63 @@ server = function(input, output)
         return(NULL)
       
       if(input$number == 1) {
-        print(input)
         if(is.numeric(data[,input$first])) {
           return(selectInput("choosePlot", "Choose a Plot",
                              choices = c("Histogram","Bar Plot")))
+        }else{return(NULL)}
+      }
+      else if(input$number == 2)
+      {
+        if(is.numeric(data[,input$first]) & is.numeric(data[,input$second])){
+          return(selectInput("choosePlot", "Choose a Plot",
+                             choices = c("Simple Scatter Plot","Scatter plot|regression line")))           
+        }
+        else if((is.factor(data[,input$first]) & is.numeric(data[,input$second])) | 
+                (is.numeric(data[,input$first]) & is.factor(data[,input$second]))) {
+          return(selectInput("choosePlot", "Choose a Plot",
+                             choices = c("Bar Plot","Bar Plot Facet","Histogram","Box Plot")))
+        }
+        else if(is.factor(data[,input$first]) & is.factor(data[,input$second])) {
+          return(selectInput("choosePlot", "Choose a Plot",
+                             choices = c("Bar Plot","Mosaic Plot")))
+        }
+        else if((is.Date(data[,input$first]) & is.numeric(data[,input$second])) | 
+                (is.numeric(data[,input$first]) & is.Date(data[,input$second]))) {
+          return(selectInput("choosePlot", "Choose a Plot",
+                             choices = c("Scatter Plot","Line Plot")))
         }
       }
       else{return(NULL)}
     })
     
     output$SelectCategory1 = renderUI({
+      
       data = dataframe()
       if(is.null(data))
         return(NULL)
       vec = c()
       col = colnames(data)
-      for(i in 1:length(colnames(data))) {
-        if(!is.Date(data[,i])) {
-          vec = c(vec, col[i])
-        }
-      }
       if(input$number == 1) {
-          return(selectInput("first", "Variable 1", choices = vec))
-      }
-      else{
-          return(selectInput("first", "Variable 1", choices = col))
+        for(i in 1:length(colnames(data))) {
+          if(!is.Date(data[,i])) {
+            vec = c(vec, col[i])
+          }
+        }
+        return(selectInput("first", "Variable 1",
+                  choices = vec))
+      }else if(input$number == 2) {
+        for(i in 1:length(colnames(data))) {
+          if(!is.character(data[,i])) {
+            vec = c(vec, col[i])
+          }
+        }
+        return(selectInput("first", "Variable 1",
+                           choices = vec))
+      }else{
+      return(selectInput("first", "Variable 1",
+                           choices = col))
       }
     })
-
     output$SelectCategory2 = renderUI({
       
       data = dataframe()
@@ -57,10 +88,20 @@ server = function(input, output)
         return(NULL)
       if(input$number < 2)
         return(NULL)
+      vec = c()
+      col = colnames(data)
+      if(input$number == 2){
+        for(i in 1:length(colnames(data))) {
+          if(!is.character(data[,i])) {
+            vec = c(vec, col[i])
+          }
+        }
+        return(selectInput("second", "Variable 2",
+                           choices = vec))
+      }
       selectInput("second", "Variable 2",
-                  choices = colnames(data)) 
+                  choices = col) 
     }) 
-
     output$SelectCategory3 = renderUI({
       
       data = dataframe()
@@ -72,7 +113,8 @@ server = function(input, output)
                   choices = colnames(data)) 
     }) 
     
-    output$plot = renderPlot({      
+    output$plot = renderPlot({
+      
       dataset = dataframe()
       if(is.null(dataset)) return(NULL)
       
@@ -80,11 +122,11 @@ server = function(input, output)
         plot_one_dimensional(dataset, input$first, input$choosePlot)
       }
       else if(input$number == 2) {
-        plot_two_dimensional(dataset, input$first, input$second)  
+        plot_two_dimensional(dataset, input$first, input$second, input$choosePlot)  
       }
       else{
         plot_three_dimensional(dataset, input$first, input$second, input$third)
-      }
-      
-    })    
+      } 
+    })
 }
+
