@@ -1,10 +1,11 @@
 options(shiny.maxRequestSize = 40*1024^2)
 server <- function(input, output) {
- 
-  observeEvent(input$about, {
-    shinyalert("About", "This is group 2 Data Visualization R shiny project. Accepted input file types are .csv, .txt.", type = "info")
-  })
 
+  observeEvent(input$preview, {
+    # Show a modal when the button is pressed
+    shinyalert("Oops!", "Something went wrong.", type = "error")
+  })
+ 
   dataframe <- reactive({
     inFile <- input$file
     if (is.null(inFile))
@@ -141,6 +142,7 @@ server <- function(input, output) {
   }) 
 
   output$SelectCategorical = renderUI({
+    
     data = dataframe()
     if(is.null(data))
       return(NULL)

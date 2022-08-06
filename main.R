@@ -15,6 +15,7 @@ library(rainbow)
 library(ggmosaic)
 library(shinycssloaders)
 library(shinybusy)
+library(shinyalert)
 
 source("clean.R")
 source("plot.R")
@@ -56,7 +57,10 @@ if (interactive()) {
     checkboxInput("outlier","Remove Outliers", value = FALSE),
     selectInput('number','Number Of Variables To Plot ', choices = c(1, 2,3), selected = 1),
     textInput("date", "Date Variables",""),
-    fluidRow(column(3),column(4,actionButton("submit", "Done"))))
+    fluidRow(column(3),column(4,actionButton("submit", "Done"))),
+    fluidRow(column(3),column(4,actionButton("about", "About")))
+  )
+
   
   ui <- dashboardPage(
     header,
