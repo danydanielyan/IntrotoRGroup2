@@ -11,8 +11,8 @@ plot_one_dimensional = function(data, first, plot)
     }
   } 
   else if(is.factor(data[,first])) {
-      return(ggplot(data, aes_string(x = first, fill = first)) +
-               geom_bar())
+    return(ggplot(data, aes_string(x = first, fill = first)) +
+             geom_bar())
   }
   else if(is.character(data[,first])) {
     corpus <- Corpus(VectorSource(data[,first]))
@@ -106,37 +106,80 @@ plot_two_dimensional = function(data, first, second, plot)
   }else { NULL }
 }
 
-plot_three_dimensional = function(data, first, second, third)
+plot_three_dimensional = function(data, first, second, third,plot)
 {
   if(is.numeric(data[,first]) & is.numeric(data[,second]) & is.numeric(data[,third])) {
     ggplot(data, aes_string(x = first , y = second, color = third)) +
-      geom_point(position = "jitter",width = .2, color ="#FDB462") 
+      geom_point(position = "jitter",width = .2,color = "#FDB462") 
   }
   else if(is.numeric(data[,first]) & is.numeric(data[,second]) & is.factor(data[,third])) {
-    ggplot(data, aes_string(x = first , y = second, color = third)) +
-      geom_point(position = "jitter",width = .2, color ="#FDB462") 
+    if(plot == "Simple Scatter Plot") {
+      return(ggplot(data, aes_string(x = third , y = first, color = second)) +
+                geom_point(position = "jitter",width = .2) )
+    }
+    else if(plot == "Scatter Plot|Cat. colour") {
+      return(ggplot(data, aes_string(x = first , y = second, color = third)) +
+                geom_point(position = "jitter",width = .2) )
+    }
+    else if(plot == "Facet Scatter Plot") {
+      return(ggplot(data, aes_string(x = first , y = second,color = third)) +
+                geom_point(position = "jitter",width = .2) + facet_wrap(third))
+    }
+    else if(plot == "Smooth Method Scatter Plot") {
+      return(ggplot(data, aes_string(x = first , y = second,color = third, shape = third)) +
+               geom_point(position = "jitter",width = .2) + geom_smooth(method = "lm"))
+    }
   }
   else if(is.numeric(data[,first]) & is.factor(data[,second]) & is.numeric(data[,third])) {
-    ggplot(data, aes_string(x = first , y = third, color = second)) +
-      geom_point(position = "jitter",width = .2, color ="#FDB462") 
+    if(plot == "Simple Scatter Plot") {
+      return(ggplot(data, aes_string(x = second , y = first, color = third)) +
+               geom_point(position = "jitter",width = .2) )
+    }
+    else if(plot == "Scatter Plot|Cat. colour") {
+      return(ggplot(data, aes_string(x = first , y = third, color = second)) +
+               geom_point(position = "jitter",width = .2) )
+    }
+    else if(plot == "Facet Scatter Plot") {
+      return(ggplot(data, aes_string(x = first , y = third,color = second)) +
+               geom_point(position = "jitter",width = .2) + facet_wrap(second))
+    }
+    else if(plot == "Smooth Method Scatter Plot") {
+      return(ggplot(data, aes_string(x = first , y = third, color = second, shape = second)) +
+               geom_point(position = "jitter",width = .2) + geom_smooth(method = "lm"))
+    } 
   }
   else if(is.factor(data[,first]) & is.numeric(data[,second]) & is.numeric(data[,third])) {
-    ggplot(data, aes_string(x = second , y = third, color = first)) +
-      geom_point(position = "jitter",width = .2, color ="#FDB462") 
+    if(plot == "Simple Scatter Plot") {
+      return(ggplot(data, aes_string(x = first , y = second, color = third)) +
+               geom_point(position = "jitter",width = .2) )
+    }
+    else if(plot == "Scatter Plot|Cat. colour") {
+      return(ggplot(data, aes_string(x = second , y = third, color = first)) +
+               geom_point(position = "jitter",width = .2) )
+    }
+    else if(plot == "Facet Scatter Plot") {
+      return(ggplot(data, aes_string(x = second , y = third,color = first)) +
+               geom_point(position = "jitter",width = .2) + facet_wrap(first))
+    }
+    else if(plot == "Smooth Method Scatter Plot") {
+      return(ggplot(data, aes_string(x = second , y = third,color = first, shape = first)) +
+               geom_point(position = "jitter",width = .2) + geom_smooth(method = "lm"))
+    } 
   }
-  else if(is.factor(data[,first]) & is.factor(data[,second]) & is.numeric(data[,third])) {
-    ggplot(data, aes_string(x=first, y= third, fill=second)) + geom_boxplot()
+  else if(is.factor(data[,first]) & is.factor(data[,second]) & is.numeric(data[,third])){ 
+      return(ggplot(data, aes_string(x=first, y= third, fill=second)) + geom_boxplot())
+    
   }
   else if(is.factor(data[,first]) & is.numeric(data[,second]) & is.factor(data[,third])) {
-    ggplot(data, aes_string(x=first, y= second, fill=third)) + geom_boxplot()
-  }
+      return(ggplot(data, aes_string(x=first, y= second, fill= third)) + geom_boxplot())
+    }
   else if(is.numeric(data[,first]) & is.factor(data[,second]) & is.factor(data[,third])) {
-    ggplot(data, aes_string(x=second, y= first, fill=third)) + geom_boxplot()
+      return(ggplot(data, aes_string(x=second, y= first, fill=third)) + geom_boxplot())
   }
   else if(is.factor(data[,first]) & is.factor(data[,second]) & is.factor(data[,third])) {
     if(first == second | second == third | first == third)
-      return(NULL)
-    ggplot(data,aes_string(x=first, fill=second)) + geom_bar(position = "dodge") + facet_wrap(~third)
+     return(NULL)
+    ggplot(data,aes_string(x=first, fill=second)) + geom_bar(position = "dodge") + facet_wrap(third)
   }
   
 }

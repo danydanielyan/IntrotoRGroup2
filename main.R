@@ -32,21 +32,21 @@ if (interactive()) {
   body = dashboardBody( 
     shinyDashboardThemes(theme = "grey_dark"),
     fluidRow(plotOutput("plot")),
- 
+    
     fluidRow(
       column(4,uiOutput('SelectCategory1')),
       column(4,uiOutput('SelectPlotType'))
-  ),
+    ),
     fluidRow(
       column(4,uiOutput('SelectCategory2'))
-  ),
+    ),
     fluidRow(
-     column(4,uiOutput('SelectCategory3'))
-  ),
-  
-  fluidRow(
-    column(4)
-  ))
+      column(4,uiOutput('SelectCategory3'))
+    ),
+    
+    fluidRow(
+      column(4)
+    ))
   
   
   sideBar = dashboardSidebar(
@@ -65,7 +65,7 @@ if (interactive()) {
     body
   )
   
-    
+  
   shinyApp(ui, server)
   
 }
