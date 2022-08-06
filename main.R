@@ -9,6 +9,9 @@ library(dashboardthemes)
 library(gganimate)
 library(stringr)
 library(lubridate)
+library(wordcloud)
+library(tm)
+library(rainbow)  
 
 source("clean.R")
 source("plot.R")
@@ -21,7 +24,7 @@ if (interactive()) {
   
   header = dashboardHeader(
     title = "DATA EXPLORER"
-    )
+  )
   
   
   body = dashboardBody( 
@@ -32,7 +35,7 @@ if (interactive()) {
       column(4,uiOutput('SelectCategory1')),
       column(4,uiOutput('SelectCategory2')),
       column(4,uiOutput('SelectCategory3')))
-    )
+  )
   
   
   sideBar = dashboardSidebar(
@@ -44,7 +47,7 @@ if (interactive()) {
     selectInput('number','Number Of Variables To Plot ', choices = c(1, 2,3), selected = 1),
     textInput("date", "Date Variables",""),
     fluidRow(column(3),column(4,actionButton("submit", "Done"))))
-    
+  
   ui <- dashboardPage(
     header,
     sideBar,
@@ -64,8 +67,7 @@ if (interactive()) {
       data = fill_missing_values(dataNotCleared,input$clean, input$outlier)
       dataNotDate = data
       if(input$submit > 0)
-      data = formate_data(isolate(input$date),dataNotDate)
-      print(str(data))
+        data = formate_data(isolate(input$date),dataNotDate)
       return(data)
     })
     
@@ -76,9 +78,20 @@ if (interactive()) {
       data = dataframe()
       if(is.null(data))
         return(NULL)
-      
-      selectInput("first", "Variable 1",
-                  choices = colnames(data)) 
+      vec = c()
+      col = colnames(data)
+      for(i in 1:length(colnames(data))) {
+        if(!is.Date(data[,i])) {
+          vec = c(vec, col[i])
+        }
+      }
+      if(input$number == 1) {
+      return(selectInput("first", "Variable 1",
+                  choices = vec))
+      }else{
+      return(selectInput("first", "Variable 1",
+                           choices = col))
+      }
     })
     output$SelectCategory2 <-renderUI({
       
@@ -107,26 +120,26 @@ if (interactive()) {
     
     #PLOTING
     
-  
+    
     output$plot <- renderPlot({
       
-      data1 = dataframe()
-      if(is.null(data1)) return(NULL)
-
+      dataset = dataframe()
+      if(is.null(dataset)) return(NULL)
+      
       if(input$number == 1) {
-          plot_one_dimensional(data1, input$first)
+        plot_one_dimensional(dataset, input$first)
       }
       else if(input$number == 2) {
-          plot_two_dimensional(data, input$first, input$second)  
+        plot_two_dimensional(dataset, input$first, input$second)  
       }
       else{
-        plotThreeVariables()
+        plot_three_dimensional(dataset, input$first, input$second, input$third)
       }
       
     })
     
   }
-
+  
   shinyApp(ui, server)
- 
+  
 }
