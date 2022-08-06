@@ -66,7 +66,7 @@ fill_missing_values <- function(dataset,select,outlier){
   return (dataset)
 }
 
-formate_data = function(date,dataset)
+formate_date = function(date,dataset)
 {
   if(!is.null(dataset)){
     vec = colnames(dataset)

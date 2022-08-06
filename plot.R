@@ -11,10 +11,8 @@ plot_one_dimensional = function(data, first, plot)
     }
   } 
   else if(is.factor(data[,first])) {
-    if(plot == "Bar Plot")  {
       return(ggplot(data, aes_string(x = first, fill = first)) +
                geom_bar())
-    }
   }
   else if(is.character(data[,first])) {
     corpus <- Corpus(VectorSource(data[,first]))
@@ -23,30 +21,89 @@ plot_one_dimensional = function(data, first, plot)
     freq <- slam::row_sums(tdm)
     words <- names(freq)    
     wordcloud(words, freq, min.freq = 1,max.words=200,random.order=FALSE, colors=brewer.pal(8, "Set3"))
-  }
-  else { NULL }
+  }else { NULL }
 }
 
-plot_two_dimensional = function(data, first, second) 
+plot_two_dimensional = function(data, first, second, plot) 
 {
+  # if(is.numeric(data[,first]) & is.Date(data[,second])) {
+  #   if(plot == "Scatter Plot") {
+  #     print("We are here")
+  #     return(ggplot(data, aes_string(x = second, y = first)) +
+  #              geom_point(position = "jitter",width = .2,color = "#FDB462"))
+  #   }
+  #   else if(plot = "Line Plot") {
+  #     return(ggplot(data, aes_string(x = second, y = first)) +
+  #              geom_line(color = "#FDB462"))
+  #   }
+  # }
+  # else if(is.Date(data[,first]) & is.numeric(data[,second])) {
+  #   if(plot == "Scatter Plot") {
+  #     return(ggplot(data, aes_string(x = first, y = second)) +
+  #              geom_point(position = "jitter",width = .2,color = "#FDB462"))
+  #   }
+  #   else if(plot = "Line Plot") {
+  #     return(ggplot(data, aes_string(x = first, y = second)) +
+  #              geom_line(color = "#FDB462"))
+  #   }
+  # }
   if(is.numeric(data[,first]) & is.numeric(data[,second])) {
-    ggplot(data, aes_string(x=first, y=second)) +
-      geom_point(position = "jitter",width = .2,color = "#FDB462")
+    if(plot == "Simple Scatter Plot") {
+      return(ggplot(data, aes_string(x=first, y=second)) +
+               geom_point(position = "jitter",width = .2,color = "#FDB462"))
+    }
+    else if(plot == "Scatter plot|regression line") {
+      return(ggplot(data, aes_string(x=first, y=second)) +
+               geom_point(position = "jitter",width = .2,color = "#FDB462")+
+               geom_smooth(method = "lm"))
+    }
   }
   else if(is.numeric(data[,first]) & is.factor(data[,second])) {
-    ggplot(data, aes_string(x=first, fill=second)) +
-      geom_bar() 
-    
+    if(plot == "Bar Plot") {
+      return(ggplot(data, aes_string(x=first, fill=second)) +
+               geom_bar())
+    }
+    else if(plot == "Bar Plot Facet") {
+      return(ggplot(data, aes_string(x=first, fill=second)) +
+               geom_bar() + facet_grid(second))
+    }
+    else if(plot == "Histogram") {
+      return(ggplot(data, aes_string(x=first, fill=second)) +
+               geom_histogram())
+    }
+    else if(plot == "Box Plot") {
+      return(ggplot(data, aes_string(x=first, fill=second)) +
+               geom_boxplot())
+    }
   }
   else if(is.factor(data[,first]) & is.numeric(data[,second])) {
-    ggplot(data, aes_string(x=second, fill=first)) +
-      geom_bar()     
+    if(plot == "Bar Plot") {
+      return(ggplot(data, aes_string(x=second, fill=first)) +
+               geom_bar())
+    }
+    else if(plot == "Bar Plot Facet") {
+      return(ggplot(data, aes_string(x=second, fill=first)) +
+               geom_bar() + facet_grid(first))
+    }
+    else if(plot == "Histogram") {
+      return(ggplot(data, aes_string(x=second, fill=first)) +
+               geom_histogram())
+    }
+    else if(plot == "Box Plot") {
+      return(ggplot(data, aes_string(x= second, fill= first)) +
+               geom_boxplot())
+    }   
   }
   else if(is.factor(data[,first]) & is.factor(data[,second])) {
-    ggplot(data, aes_string(x=second, fill=first)) +
-      geom_bar() 
-  }
-  else { NULL }
+    if(plot == "Bar Plot") {
+      return(ggplot(data, aes_string(x=second, fill=first)) +
+               geom_bar())
+    }
+    else if(plot == "Mosaic Plot"){
+      counts = table(data[,first],data[,second])
+      return(mosaicplot(counts, col="#FDB462"))
+    }
+  }else { NULL }
 }
 
 plot_three_dimensional = function(data, first, second, third)
