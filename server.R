@@ -1,3 +1,4 @@
+options(shiny.maxRequestSize = 40*1024^2)
 server <- function(input, output) {
   
   dataframe <- reactive({
@@ -77,7 +78,7 @@ server <- function(input, output) {
       }
       return(selectInput("first", "Variable 1",
                          choices = vec))
-    }else if(input$number == 2) {
+    }else (input$number == 2) {
       for(i in 1:length(colnames(data))) {
         if(!is.character(data[,i])) {
           vec = c(vec, col[i])
@@ -85,9 +86,6 @@ server <- function(input, output) {
       }
       return(selectInput("first", "Variable 1",
                          choices = vec))
-    }else{
-      return(selectInput("first", "Variable 1",
-                         choices = col))
     }
   })
   output$SelectCategory2 = renderUI({
@@ -99,7 +97,7 @@ server <- function(input, output) {
       return(NULL)
     vec = c()
     col = colnames(data)
-    if(input$number == 2){
+    if(input$number >= 2){
       for(i in 1:length(colnames(data))) {
         if(!is.character(data[,i])) {
           vec = c(vec, col[i])
@@ -108,8 +106,6 @@ server <- function(input, output) {
       return(selectInput("second", "Variable 2",
                          choices = vec))
     }
-    selectInput("second", "Variable 2",
-                choices = col) 
   }) 
   output$SelectCategory3 = renderUI({
     
@@ -118,8 +114,14 @@ server <- function(input, output) {
       return(NULL)
     if(input$number < 3)
       return(NULL)
+    vec = c()
+    col = colnames(data)
+    for(i in 1:length(colnames(data))) {
+      if(!is.character(data[,i])) {
+        vec = c(vec, col[i])
+      }}
     selectInput("third", "Variable 3",
-                choices = colnames(data)) 
+                choices = vec) 
   }) 
   
   output$plot = renderPlot({

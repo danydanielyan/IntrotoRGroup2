@@ -181,5 +181,4 @@ plot_three_dimensional = function(data, first, second, third,plot)
      return(NULL)
     ggplot(data,aes_string(x=first, fill=second)) + geom_bar(position = "dodge") + facet_wrap(third)
   }
-  
 }

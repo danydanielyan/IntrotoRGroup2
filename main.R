@@ -18,7 +18,6 @@ source("clean.R")
 source("plot.R")
 source("server.R")
 
-options(shiny.maxRequestSize = 40*1024^2)
 thematic::thematic_shiny(font = "auto")
 
 if (interactive()) {
