@@ -30,12 +30,21 @@ if (interactive()) {
   body = dashboardBody( 
     shinyDashboardThemes(theme = "grey_dark"),
     fluidRow(plotOutput("plot")),
-    
+ 
     fluidRow(
       column(4,uiOutput('SelectCategory1')),
-      column(4,uiOutput('SelectCategory2')),
-      column(4,uiOutput('SelectCategory3')))
-  )
+      column(4,uiOutput('SelectPlotType'))
+  ),
+    fluidRow(
+      column(4,uiOutput('SelectCategory2'))
+  ),
+    fluidRow(
+     column(4,uiOutput('SelectCategory3'))
+  ),
+  
+  fluidRow(
+    column(4)
+  ))
   
   
   sideBar = dashboardSidebar(
@@ -71,8 +80,22 @@ if (interactive()) {
       return(data)
     })
     
+    output$SelectPlotType = renderUI({
+      
+      data = dataframe()
+      if(is.null(data))
+        return(NULL)
+      
+      if(input$number == 1) {
+        print(input)
+        if(is.numeric(data[,input$first])) {
+          return(selectInput("choosePlot", "Choose a Plot",
+                             choices = c("Histogram","Bar Plot")))
+        }
+      }else{return(NULL)}
+    })
     
-    output$SelectCategory1 <-renderUI({
+    output$SelectCategory1 = renderUI({
       
       
       data = dataframe()
@@ -93,7 +116,7 @@ if (interactive()) {
                            choices = col))
       }
     })
-    output$SelectCategory2 <-renderUI({
+    output$SelectCategory2 = renderUI({
       
       data = dataframe()
       if(is.null(data))
@@ -103,7 +126,7 @@ if (interactive()) {
       selectInput("second", "Variable 2",
                   choices = colnames(data)) 
     }) 
-    output$SelectCategory3 <-renderUI({
+    output$SelectCategory3 = renderUI({
       
       data = dataframe()
       if(is.null(data))
@@ -121,13 +144,13 @@ if (interactive()) {
     #PLOTING
     
     
-    output$plot <- renderPlot({
+    output$plot = renderPlot({
       
       dataset = dataframe()
       if(is.null(dataset)) return(NULL)
       
       if(input$number == 1) {
-        plot_one_dimensional(dataset, input$first)
+        plot_one_dimensional(dataset, input$first, input$choosePlot)
       }
       else if(input$number == 2) {
         plot_two_dimensional(dataset, input$first, input$second)  

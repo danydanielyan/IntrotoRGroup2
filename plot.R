@@ -1,13 +1,20 @@
-plot_one_dimensional = function(data, first) 
+plot_one_dimensional = function(data, first, plot) 
 {
   if(is.numeric(data[,first])) {
-    ggplot(data, aes_string(x = first)) + 
-      geom_histogram(bins = 50,fill = "#FDB462")
+    if(plot == "Histogram") {
+      return(ggplot(data, aes_string(x = first)) + 
+               geom_histogram(bins = 50,fill = "#FDB462"))
+    }
+    else if(plot == "Bar Plot") {
+      return(ggplot(data, aes_string(x = first,fill = first)) + 
+               geom_bar(fill = "#FDB462"))
+    }
   } 
   else if(is.factor(data[,first])) {
-    lengthLevels = length(levels(data[,first]))    
-    ggplot(data, aes_string(x = first, fill = first)) +
-      geom_bar() + scale_fill_brewer(palette="Set3")
+    if(plot == "Bar Plot")  {
+      return(ggplot(data, aes_string(x = first, fill = first)) +
+               geom_bar())
+    }
   }
   else if(is.character(data[,first])) {
     corpus <- Corpus(VectorSource(data[,first]))
@@ -28,16 +35,16 @@ plot_two_dimensional = function(data, first, second)
   }
   else if(is.numeric(data[,first]) & is.factor(data[,second])) {
     ggplot(data, aes_string(x=first, fill=second)) +
-      geom_bar() + scale_fill_brewer(palette="Set3")
+      geom_bar() 
     
   }
   else if(is.factor(data[,first]) & is.numeric(data[,second])) {
     ggplot(data, aes_string(x=second, fill=first)) +
-      geom_bar() + scale_fill_brewer(palette="Set3")    
+      geom_bar()     
   }
   else if(is.factor(data[,first]) & is.factor(data[,second])) {
     ggplot(data, aes_string(x=second, fill=first)) +
-      geom_bar() + scale_fill_brewer(palette="Set3")
+      geom_bar() 
   }
   else { NULL }
 }
