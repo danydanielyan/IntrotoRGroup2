@@ -1,10 +1,10 @@
 options(shiny.maxRequestSize = 40*1024^2)
 server <- function(input, output) {
- 
+  
   observeEvent(input$about, {
     shinyalert("About", "This is group 2 Data Visualization R shiny project. Accepted input file types are .csv, .txt.", type = "info")
   })
-
+  
   dataframe <- reactive({
     inFile <- input$file
     if (is.null(inFile))
@@ -12,7 +12,7 @@ server <- function(input, output) {
     
     data = read.csv(file= inFile$datapath, sep=input$sep)
     dataNotCleared = data
-
+    
     show_modal_spinner(
       spin = "cube-grid",
       color = "firebrick",
@@ -23,9 +23,6 @@ server <- function(input, output) {
     dataNotDate = data
     if(input$submit > 0)
       data = formate_date(isolate(input$date),dataNotDate)
-    print(head(data,n =20))
-    print(str(data))
-
     remove_modal_spinner()
     return(data)
   })
@@ -35,7 +32,8 @@ server <- function(input, output) {
     data = dataframe()
     if(is.null(data))
       return(NULL)
-    
+    if(input$corr == TRUE)
+      return(NULL)
     if(input$number == 1) {
       if(is.numeric(data[,input$first])) {
         return(selectInput("choosePlot", "Choose a Plot",
@@ -59,10 +57,10 @@ server <- function(input, output) {
     }
     else if(input$number == 3) {
       if((is.numeric(data[,input$first]) & is.numeric(data[,input$second])
-         & is.factor(data[,input$third])) | (is.numeric(data[,input$first]) 
-         & is.factor(data[,input$second]) & is.numeric(data[,input$third])) | 
+          & is.factor(data[,input$third])) | (is.numeric(data[,input$first]) 
+                                              & is.factor(data[,input$second]) & is.numeric(data[,input$third])) | 
          (is.factor(data[,input$first]) & is.numeric(data[,input$second]) 
-         & is.numeric(data[,input$third]))) {
+          & is.numeric(data[,input$third]))) {
         return(selectInput("choosePlot", "Choose a Plot",
                            choices = c("Simple Scatter Plot","Scatter Plot|Cat. colour","Facet Scatter Plot","Smooth Method Scatter Plot")))
       }
@@ -74,6 +72,8 @@ server <- function(input, output) {
     
     data = dataframe()
     if(is.null(data))
+      return(NULL)
+    if(input$corr == TRUE)
       return(NULL)
     vec = c()
     col = colnames(data)
@@ -101,6 +101,8 @@ server <- function(input, output) {
     if(is.null(data))
       return(NULL)
     if(input$number < 2)
+      return(NULL)
+    if(input$corr == TRUE)
       return(NULL)
     vec = c()
     col = colnames(data)
@@ -130,6 +132,8 @@ server <- function(input, output) {
       return(NULL)
     if(input$number < 3)
       return(NULL)
+    if(input$corr == TRUE)
+      return(NULL)
     vec = c()
     col = colnames(data)
     for(i in 1:length(colnames(data))) {
@@ -139,37 +143,41 @@ server <- function(input, output) {
     selectInput("third", "Variable 3",
                 choices = vec) 
   }) 
-
+  
   output$SelectCategorical = renderUI({
     data = dataframe()
     if(is.null(data))
       return(NULL)
     if(input$number == 0)
       return(NULL)
-    
+    if(input$corr == TRUE)
+      return(NULL)
     vec = c()
     col = colnames(data)
     for(i in 1:length(colnames(data))) {
       if(is.factor(data[,i])) {
         vec = c(vec, col[i])
       }}
-    selectInput("categorical", "Categorical Variable",
+    selectInput("categorical", "Group By",
                 choices = vec) 
   }) 
-  
+
   output$plot = renderPlot({
     
     dataset = dataframe()
     if(is.null(dataset)) return(NULL)
     
-    if(input$number == 1) {
+    if(input$corr == TRUE) {
+     return(plot_heatmap(dataset))
+    }
+    if(input$number == 1 & input$corr == FALSE) {
       plot_one_dimensional(dataset, input$first, input$choosePlot)
     }
-    else if(input$number == 2) {
+    else if(input$number == 2 & input$corr == FALSE) {
       plot_two_dimensional(dataset, input$first, input$second, input$choosePlot)  
     }
-    else{
+    else if(input$number == 3 & input$corr == FALSE) {
       plot_three_dimensional(dataset, input$first, input$second, input$third, input$choosePlot)
-    } 
+    }else{ return(NULL)}
   })
 }
