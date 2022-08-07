@@ -17,6 +17,7 @@ library(shinycssloaders)
 library(shinybusy)
 library(shinyalert)
 library(reshape2)
+library(SnowballC)
 
 
 source("clean.R")
@@ -34,7 +35,6 @@ if (interactive()) {
   body = dashboardBody(
     shinyDashboardThemes(theme = "grey_dark"),
     fluidRow(withSpinner(plotOutput("plot"))),
-    
     fluidRow(
       column(4,(uiOutput('SelectCategory1'))),
       column(4,(uiOutput('SelectPlotType'))),

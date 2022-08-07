@@ -6,7 +6,7 @@ plot_heatmap = function(data)
   return(ggplot(data = melted_corr_mat, aes(x=Var1, y=Var2, fill=value)) + 
            geom_tile()+
            scale_fill_gradient2(low = "#009E73", high = "#E69F00", mid = "#2D3741", midpoint = 0, limit = c(-1,1))+
-           theme(axis.text.x = element_text(size = 12), axis.text.y = element_text(size = 12),
+           theme(axis.text.x = element_text(angle = 45,size = 12,hjust = 1), axis.text.y = element_text(size = 12),
                  axis.title.x = element_blank(), axis.title.y = element_blank())+
            coord_fixed())
 }
@@ -29,10 +29,11 @@ plot_one_dimensional = function(data, first, plot)
     else if(is.character(data[,first])) {
       corpus <- Corpus(VectorSource(data[,first]))
       corpus <- tm_map(corpus,  removeNumbers)
-      tdm <-TermDocumentMatrix(corpus, control=list(wordLengths=c(1,Inf), removePunctuation=T, stopwords=T, stemming=T))
+      corpus <- tm_map(corpus, tolower)
+      tdm <-TermDocumentMatrix(corpus, control=list(wordLengths=c(1,Inf)))
       freq <- slam::row_sums(tdm)
       words <- names(freq)    
-      wordcloud(words, freq, min.freq = 1,max.words=200,random.order=FALSE, colors=brewer.pal(8, "Set3"))
+      wordcloud(words, freq, min.freq = 1,max.words=200,random.order=FALSE, colors=brewer.pal(8, "Set2"))
     }else { NULL }
 }
 

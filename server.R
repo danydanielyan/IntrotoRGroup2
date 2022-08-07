@@ -84,7 +84,7 @@ server <- function(input, output) {
         }
       }
       return(selectInput("first", "Variable 1",
-                         choices = vec))
+                         choices = sort(vec)))
     }else{
       for(i in 1:length(col)) {
         if(!is.character(data[,i])) {
@@ -92,7 +92,7 @@ server <- function(input, output) {
         }
       }
       return(selectInput("first", "Variable 1",
-                         choices = vec))
+                         choices = sort(vec)))
     }
   })
   output$SelectCategory2 = renderUI({
@@ -113,7 +113,7 @@ server <- function(input, output) {
         }
       }
       return(selectInput("second", "Variable 2",
-                         choices = vec))
+                         choices = sort(vec)))
     }
     else{
       for(i in 1:length(col)) {
@@ -122,7 +122,7 @@ server <- function(input, output) {
         }
       }
       return(selectInput("second", "Variable 2",
-                         choices = vec))
+                         choices = sort(vec)))
     }
   }) 
   output$SelectCategory3 = renderUI({
@@ -141,7 +141,7 @@ server <- function(input, output) {
         vec = c(vec, col[i])
       }}
     selectInput("third", "Variable 3",
-                choices = vec) 
+                choices = sort(vec)) 
   }) 
   
   output$SelectCategorical = renderUI({
@@ -159,7 +159,7 @@ server <- function(input, output) {
         vec = c(vec, col[i])
       }}
     selectInput("categorical", "Group By",
-                choices = vec) 
+                choices = sort(vec))
   }) 
 
   output$plot = renderPlot({

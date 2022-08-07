@@ -20,7 +20,7 @@ find_factors = function(dataset)
       count = length(unique(dataset[,col]))
       lengthOfCol = nrow(dataset)
       prc = count / lengthOfCol * 100
-      if(prc < 70) 
+      if(prc < 50) 
       {
         dataset[,col] = as.factor(dataset[,col]) 
       }
