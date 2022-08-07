@@ -37,7 +37,8 @@ if (interactive()) {
     
     fluidRow(
       column(4,(uiOutput('SelectCategory1'))),
-      column(4,(uiOutput('SelectPlotType')))
+      column(4,(uiOutput('SelectPlotType'))),
+      column(4,(uiOutput('SelectCategorical')))
     ),
     fluidRow(
       column(4,(uiOutput('SelectCategory2')))
@@ -45,10 +46,7 @@ if (interactive()) {
     fluidRow(
       column(4,(uiOutput('SelectCategory3')))
     ),
-    
-    fluidRow(
-      column(4,(uiOutput('SelectCategorical'))),
-    ))
+  )
   
   sideBar = dashboardSidebar(
     fluidRow(column(6),column(4,actionButton("about", "About"))),
