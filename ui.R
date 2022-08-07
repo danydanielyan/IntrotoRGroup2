@@ -39,6 +39,7 @@ if (interactive()) {
       column(4,(uiOutput('SelectCategory1'))),
       column(4,(uiOutput('SelectPlotType'))),
       column(4,(uiOutput('SelectCategorical')))
+      verbatimTextOutput("strfile")
     ),
     fluidRow(
       column(4,(uiOutput('SelectCategory2')))

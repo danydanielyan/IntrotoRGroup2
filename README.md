@@ -1,3 +1,3 @@
 # IntrotoRGroup2
 
-run main.R
+run ui.R

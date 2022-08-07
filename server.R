@@ -27,6 +27,8 @@ server <- function(input, output) {
     return(data)
   })
   
+  output$strfile = renderPrint({str(dataframe())})
+  
   output$SelectPlotType = renderUI({
     
     data = dataframe()
