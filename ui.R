@@ -39,13 +39,15 @@ if (interactive()) {
       column(4,(uiOutput('SelectCategory1'))),
       column(4,(uiOutput('SelectPlotType'))),
       column(4,(uiOutput('SelectCategorical')))
-      verbatimTextOutput("strfile")
     ),
     fluidRow(
       column(4,(uiOutput('SelectCategory2')))
     ),
     fluidRow(
       column(4,(uiOutput('SelectCategory3')))
+    ),
+    fluidRow(
+      verbatimTextOutput("strfile")
     ),
   )
   
