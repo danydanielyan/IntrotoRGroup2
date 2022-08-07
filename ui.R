@@ -18,11 +18,13 @@ library(shinybusy)
 library(shinyalert)
 library(reshape2)
 library(SnowballC)
-
+library(enquo)
+library(echarts4r)
 
 source("clean.R")
 source("plot.R")
 source("server.R")
+source("plot_inter.R")
 
 thematic::thematic_shiny(font = "auto")
 
@@ -34,18 +36,42 @@ if (interactive()) {
   
   body = dashboardBody(
     shinyDashboardThemes(theme = "grey_dark"),
-    fluidRow(withSpinner(plotOutput("plot"))),
+    
+    fluidRow(
+      tabBox(
+        title = "Plots", width = 12,
+        id = "tabset1", height = "250px",
+        tabPanel("Simple Plot", withSpinner(plotOutput("plot"))),
+        tabPanel("Interactive Plot", withSpinner(echarts4rOutput("plotI")))
+      )),
+    
+    br(),
+    br(),
+    br(),
+    br(),
+    br(),
+    br(),
+    br(),
+    br(),
+    br(),
+    br(),
+    br(),
     fluidRow(
       column(4,(uiOutput('SelectCategory1'))),
       column(4,(uiOutput('SelectPlotType'))),
       column(4,(uiOutput('SelectCategorical')))
     ),
     fluidRow(
-      column(4,(uiOutput('SelectCategory2')))
+      column(4,(uiOutput('SelectCategory2'))),
+      column(4,(uiOutput("Histogrambarcount")))
     ),
     fluidRow(
       column(4,(uiOutput('SelectCategory3')))
     ),
+    br(),
+    br(),
+    br(),
+    br(),
     fluidRow(
       verbatimTextOutput("strfile")
     ),

@@ -10,18 +10,27 @@ plot_heatmap = function(data)
                  axis.title.x = element_blank(), axis.title.y = element_blank())+
            coord_fixed())
 }
-plot_one_dimensional = function(data, first, plot) 
+plot_one_dimensional = function(data, first, plot, group,slider) 
 {
-    if(is.numeric(data[,first])) {
+    if(is.numeric(data[,first]) & group == "") {
       if(plot == "Histogram") {
         return(ggplot(data, aes_string(x = first)) + 
-                 geom_histogram(bins = 50,fill = "#FDB462"))
+                 geom_histogram(bins = as.numeric(slider),fill = "#FDB462"))
       }
       else if(plot == "Bar Plot") {
         return(ggplot(data, aes_string(x = first,fill = first)) + 
                  geom_bar(fill = "#FDB462"))
       }
     } 
+    else if(is.numeric(data[,first]) & group != "") {
+       df = data %>% 
+        group_by( !!!rlang::syms(group)) %>% 
+        summarize(min = min( !!!rlang::syms(first)), max = max( !!!rlang::syms(first)))
+       print(head(df))
+       vec = colnames(df)
+       return(ggplot(df, aes_string(x = "min" , y = "max",color = group)) +
+                geom_point(position = "jitter",width = .2) + geom_smooth(method = "lm"))
+    }
     else if(is.factor(data[,first])) {
       return(ggplot(data, aes_string(x = first, fill = first)) +
                geom_bar())

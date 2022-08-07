@@ -1,4 +1,4 @@
-options(shiny.maxRequestSize = 40*1024^2)
+options(shiny.maxRequestSize = 30*1024^2)
 server <- function(input, output) {
   
   observeEvent(input$about, {
@@ -26,7 +26,7 @@ server <- function(input, output) {
     remove_modal_spinner()
     return(data)
   })
-  
+
   output$strfile = renderPrint({str(dataframe())})
   
   output$SelectPlotType = renderUI({
@@ -150,19 +150,48 @@ server <- function(input, output) {
     data = dataframe()
     if(is.null(data))
       return(NULL)
-    if(input$number == 0)
-      return(NULL)
-    if(input$corr == TRUE)
-      return(NULL)
-    vec = c()
-    col = colnames(data)
-    for(i in 1:length(colnames(data))) {
-      if(is.factor(data[,i])) {
-        vec = c(vec, col[i])
-      }}
-    selectInput("categorical", "Group By",
-                choices = sort(vec))
+    if(input$number == 1) {
+      if(is.numeric(data[,input$first])) {
+        vec = c()
+        col = colnames(data)
+        for(i in 1:length(colnames(data))) {
+          if(is.factor(data[,i])) {
+            vec = c(vec, col[i])
+          }}
+        vec = c(vec,"")
+        selectInput("categorical", "Group By",
+                    choices = sort(vec),selected = "")
+      }
+    }else{return(NULL)}
   }) 
+  
+  output$Histogrambarcount = renderUI({
+    data = dataframe()
+    if(is.null(data))
+      return(NULL)
+    if(input$number == 1) {
+      if(input$choosePlot == "Histogram") {
+        sliderInput("slider", "Bar count",min = 25, max = 100, 50)
+    }}else{return(NULL)}
+  })
+  output$plotI <- renderEcharts4r({
+    
+    dataset = dataframe()
+    if(is.null(dataset)) return(NULL)
+    
+    if(input$corr == TRUE) {
+      return(plot_heatmap_inter(dataset))
+    }
+    if(input$number == 1 & input$corr == FALSE) {
+      plot_one_dimensional_inter(dataset, input$first, input$choosePlot)
+    }
+    else if(input$number == 2 & input$corr == FALSE) {
+      plot_two_dimensional_inter(dataset, input$first, input$second, input$choosePlot)  
+    }
+    else if(input$number == 3 & input$corr == FALSE) {
+      plot_three_dimensional_inter(dataset, input$first, input$second, input$third, input$choosePlot)
+    }else{ return(NULL)}
+  })
 
   output$plot = renderPlot({
     
@@ -173,7 +202,7 @@ server <- function(input, output) {
      return(plot_heatmap(dataset))
     }
     if(input$number == 1 & input$corr == FALSE) {
-      plot_one_dimensional(dataset, input$first, input$choosePlot)
+      plot_one_dimensional(dataset, input$first, input$choosePlot,input$categorical,input$slider)
     }
     else if(input$number == 2 & input$corr == FALSE) {
       plot_two_dimensional(dataset, input$first, input$second, input$choosePlot)  
