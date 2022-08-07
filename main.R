@@ -24,29 +24,27 @@ source("server.R")
 thematic::thematic_shiny(font = "auto")
 
 if (interactive()) {
-  
   header = dashboardHeader(
     title = "DATA EXPLORER"
   )
   
-  body = dashboardBody( 
+  body = dashboardBody(
     shinyDashboardThemes(theme = "grey_dark"),
-    fluidRow(plotOutput("plot")),
+    fluidRow(withSpinner(plotOutput("plot"))),
     
     fluidRow(
-      column(4,withSpinner(uiOutput('SelectCategory1'))),
-      column(4,withSpinner(uiOutput('SelectPlotType')))
+      column(4,(uiOutput('SelectCategory1'))),
+      column(4,(uiOutput('SelectPlotType')))
     ),
     fluidRow(
-      column(4,withSpinner(uiOutput('SelectCategory2')))
+      column(4,(uiOutput('SelectCategory2')))
     ),
     fluidRow(
-      column(4,withSpinner(uiOutput('SelectCategory3')))
+      column(4,(uiOutput('SelectCategory3')))
     ),
     
     fluidRow(
-      column(4,withSpinner(uiOutput('SelectCategorical'))),
-      #column(4)
+      column(4,(uiOutput('SelectCategorical'))),
     ))
 
   sideBar = dashboardSidebar(
@@ -61,7 +59,6 @@ if (interactive()) {
     fluidRow(column(3),column(4,actionButton("about", "About")))
   )
 
-  
   ui <- dashboardPage(
     header,
     sideBar,
